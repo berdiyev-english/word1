@@ -40,7 +40,8 @@ class EnglishWordsApp {
 
         if (!this.dbAvailable) {
             console.warn('oxford_words_data.js не найден или пуст. Слова по уровням будут пустыми, но пользовательские слова и изучение работают.');
-            this.showNotification('Не найден oxford_words_data.js — проверите имя и путь файла', 'warning');
+            // Уведомление показываем один раз, но только если действительно файла нет
+            this.showNotification('Не найден oxford_words_data.js — проверьте имя и путь файла', 'warning');
         }
 
         if (this.currentSection === 'learning') {
@@ -49,11 +50,12 @@ class EnglishWordsApp {
     }
 
     detectDatabase() {
+        // В браузере const в глобальном скоупе НЕ становится свойством window.
+        // Поэтому проверяем через typeof, а не через window.oxfordWordsDatabase.
         try {
-            // Глобальная константа из oxford_words_data.js
-            this.dbAvailable = typeof window.oxfordWordsDatabase !== 'undefined'
-                && window.oxfordWordsDatabase
-                && Object.keys(window.oxfordWordsDatabase).length > 0;
+            this.dbAvailable = (typeof oxfordWordsDatabase !== 'undefined')
+                && oxfordWordsDatabase
+                && Object.keys(oxfordWordsDatabase).length > 0;
         } catch {
             this.dbAvailable = false;
         }
@@ -190,34 +192,6 @@ class EnglishWordsApp {
             this.practiceMode = 'endless';
             this.updatePracticeButtons();
             if (this.currentSection === 'learning') this.renderLearningWords();
-        });
-
-        // Переключатели режимов — делегирование на всякий случай (дублируем для надежности)
-        const togglesRow = document.querySelector('.toggles-row');
-        if (togglesRow) {
-            togglesRow.addEventListener('click', (e) => {
-                const modeBtn = e.target.closest('.mode-btn');
-                const practiceBtn = e.target.closest('.practice-btn');
-                if (modeBtn) {
-                    this.studyMode = modeBtn.id === 'modeQuiz' ? 'quiz' : 'flashcards';
-                    this.updateModeButtons();
-                    if (this.currentSection === 'learning') this.renderLearningWords();
-                } else if (practiceBtn) {
-                    this.practiceMode = practiceBtn.id === 'practiceEndless' ? 'endless' : 'scheduled';
-                    this.updatePracticeButtons();
-                    if (this.currentSection === 'learning') this.renderLearningWords();
-                }
-            });
-        }
-
-        // Массовые действия по уровню
-        const addAllBtn = document.getElementById('addAllLevelBtn');
-        if (addAllBtn) addAllBtn.addEventListener('click', () => {
-            if (this.currentLevel) this.addAllFromLevel(this.currentLevel);
-        });
-        const removeAllBtn = document.getElementById('removeAllLevelBtn');
-        if (removeAllBtn) removeAllBtn.addEventListener('click', () => {
-            if (this.currentLevel) this.removeAllFromLevel(this.currentLevel);
         });
     }
 
@@ -488,9 +462,8 @@ class EnglishWordsApp {
 
     /* ================= КАРТОЧКИ ================= */
     getPrimaryImageUrl(word) {
+        const q = encodeURIComponent(word || 'english');
         // Более «щедрый» запрос к Unsplash Source (без ключей)
-        // Пример: https://source.unsplash.com/600x400/?run,english
-        const q = encodeURIComponent(word);
         return `https://source.unsplash.com/800x600/?${q},english,illustration`;
     }
     getFallbackImageUrl(word) {
@@ -583,12 +556,8 @@ class EnglishWordsApp {
         const questionText = direction === 'EN_RU' ? currentWord.word : currentWord.translation;
         const correct = direction === 'EN_RU' ? currentWord.translation : currentWord.word;
 
+        // Формируем варианта ответа. Даже если получится только 2–3 — не падаем во флешкарточки.
         const options = this.buildQuizOptions(currentWord, direction);
-        if (options.length < 2) {
-            // Недостаточно отвлекающих опций — откатываемся к карточке
-            this.showFlashcard();
-            return;
-        }
         const shuffled = this.shuffle(options);
 
         const progress = this.currentReviewIndex + 1;
@@ -649,13 +618,9 @@ class EnglishWordsApp {
         pick(sameLevel);
         pick(others);
 
+        // Если совсем мало слов в базе — позволяем 2-3 опции, но формат остаётся quiz.
         const options = Array.from(set);
-        while (options.length < 4 && others.length) {
-            const w = others.pop();
-            const val = direction === 'EN_RU' ? w.translation : w.word;
-            if (!options.includes(val)) options.push(val);
-        }
-        return options.slice(0, 4);
+        return options.slice(0, Math.max(2, Math.min(4, options.length)));
     }
     getAllWordsPool() {
         const pool = [];
