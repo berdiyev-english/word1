@@ -1,36 +1,37 @@
-// English Words App - Navigation fix, separated sections, flashcards + quiz, SM-2, bulk actions
-
 class EnglishWordsApp {
     constructor() {
-        // Global state
+        // UI / Навигация
         this.currentSection = 'about';
         this.currentLevel = null;
 
-        // Data
+        // Данные
         this.learningWords = [];
         this.customWords = [];
 
-        // Audio
+        // Аудио
         this.audioPlayer = document.getElementById('audioPlayer');
         this.currentAudioUrl = null;
 
-        // Study settings
-        this.studyMode = 'flashcards';      // 'flashcards' | 'quiz'
-        this.practiceMode = 'scheduled';    // 'scheduled' | 'endless'
-        this.directionMode = 'auto';        // random per question
+        // Настройки обучения
+        this.studyMode = 'flashcards';   // 'flashcards' | 'quiz'
+        this.practiceMode = 'scheduled'; // 'scheduled' | 'endless'
+        this.directionMode = 'auto';     // random EN<->RU per question
 
-        // Session state
+        // Состояние сессии
         this.currentReviewIndex = 0;
         this.currentReviewWords = [];
         this.sessionQueue = [];
 
-        // Safety flags
-        this.dbAvailable = typeof window.oxfordWordsDatabase !== 'undefined' && window.oxfordWordsDatabase && Object.keys(window.oxfordWordsDatabase).length > 0;
+        // Флаг наличия базы
+        this.dbAvailable = false;
 
         this.init();
     }
 
     init() {
+        // Проверяем доступность базы (важно — oxford_words_data.js должен подключаться перед app.js)
+        this.detectDatabase();
+
         this.loadData();
         this.migrateExistingWords();
         this.setupEventListeners();
@@ -38,7 +39,8 @@ class EnglishWordsApp {
         this.setupTheme();
 
         if (!this.dbAvailable) {
-            this.showNotification('Файл oxford_words_data.js не найден или пуст. Пул слов по уровням будет пустым.', 'warning');
+            console.warn('oxford_words_data.js не найден или пуст. Слова по уровням будут пустыми, но пользовательские слова и изучение работают.');
+            this.showNotification('Не найден oxford_words_data.js — проверите имя и путь файла', 'warning');
         }
 
         if (this.currentSection === 'learning') {
@@ -46,7 +48,18 @@ class EnglishWordsApp {
         }
     }
 
-    /* ================= THEME ================= */
+    detectDatabase() {
+        try {
+            // Глобальная константа из oxford_words_data.js
+            this.dbAvailable = typeof window.oxfordWordsDatabase !== 'undefined'
+                && window.oxfordWordsDatabase
+                && Object.keys(window.oxfordWordsDatabase).length > 0;
+        } catch {
+            this.dbAvailable = false;
+        }
+    }
+
+    /* ================= ТЕМА ================= */
     setupTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -64,7 +77,7 @@ class EnglishWordsApp {
         if (themeIcon) themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     }
 
-    /* ================= STORAGE ================= */
+    /* ================= ХРАНИЛИЩЕ ================= */
     loadData() {
         try {
             const savedLearning = localStorage.getItem('learningWords');
@@ -103,9 +116,9 @@ class EnglishWordsApp {
         return todayWords.length;
     }
 
-    /* ================= EVENTS ================= */
+    /* ================= СОБЫТИЯ ================= */
     setupEventListeners() {
-        // Bottom nav (delegation)
+        // Нижняя навигация: делегирование (надежно)
         const bottomNav = document.getElementById('bottomNav');
         if (bottomNav) {
             bottomNav.addEventListener('click', (e) => {
@@ -117,13 +130,11 @@ class EnglishWordsApp {
             });
         }
 
-        // Theme toggle
+        // Переключатель темы
         const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => this.toggleTheme());
-        }
+        if (themeToggle) themeToggle.addEventListener('click', () => this.toggleTheme());
 
-        // Level cards
+        // Карточки уровней (открыть список слов уровня)
         document.querySelectorAll('.level-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 const level = e.currentTarget.dataset.level;
@@ -131,26 +142,31 @@ class EnglishWordsApp {
             });
         });
 
-        // Back to levels
+        // Кнопка назад в списке слов уровня
         const backBtn = document.getElementById('backToLevels');
         if (backBtn) backBtn.addEventListener('click', () => this.hideLevelWords());
 
-        // Add word form
+        // Форма добавления слова
         const addWordBtn = document.getElementById('addWordBtn');
         if (addWordBtn) addWordBtn.addEventListener('click', () => this.addCustomWord());
-        const newWordInput = document.getElementById('newWord');
-        if (newWordInput) newWordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const t = document.getElementById('newTranslation');
-                if (t) t.focus();
-            }
-        });
-        const newTranslationInput = document.getElementById('newTranslation');
-        if (newTranslationInput) newTranslationInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.addCustomWord();
-        });
 
-        // Study mode toggles
+        const newWordInput = document.getElementById('newWord');
+        if (newWordInput) {
+            newWordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const t = document.getElementById('newTranslation');
+                    if (t) t.focus();
+                }
+            });
+        }
+        const newTranslationInput = document.getElementById('newTranslation');
+        if (newTranslationInput) {
+            newTranslationInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.addCustomWord();
+            });
+        }
+
+        // Переключатели режимов — прямые обработчики
         const modeFlashcards = document.getElementById('modeFlashcards');
         if (modeFlashcards) modeFlashcards.addEventListener('click', () => {
             this.studyMode = 'flashcards';
@@ -163,8 +179,6 @@ class EnglishWordsApp {
             this.updateModeButtons();
             if (this.currentSection === 'learning') this.renderLearningWords();
         });
-
-        // Practice mode toggles
         const practiceScheduled = document.getElementById('practiceScheduled');
         if (practiceScheduled) practiceScheduled.addEventListener('click', () => {
             this.practiceMode = 'scheduled';
@@ -178,7 +192,25 @@ class EnglishWordsApp {
             if (this.currentSection === 'learning') this.renderLearningWords();
         });
 
-        // Bulk level actions
+        // Переключатели режимов — делегирование на всякий случай (дублируем для надежности)
+        const togglesRow = document.querySelector('.toggles-row');
+        if (togglesRow) {
+            togglesRow.addEventListener('click', (e) => {
+                const modeBtn = e.target.closest('.mode-btn');
+                const practiceBtn = e.target.closest('.practice-btn');
+                if (modeBtn) {
+                    this.studyMode = modeBtn.id === 'modeQuiz' ? 'quiz' : 'flashcards';
+                    this.updateModeButtons();
+                    if (this.currentSection === 'learning') this.renderLearningWords();
+                } else if (practiceBtn) {
+                    this.practiceMode = practiceBtn.id === 'practiceEndless' ? 'endless' : 'scheduled';
+                    this.updatePracticeButtons();
+                    if (this.currentSection === 'learning') this.renderLearningWords();
+                }
+            });
+        }
+
+        // Массовые действия по уровню
         const addAllBtn = document.getElementById('addAllLevelBtn');
         if (addAllBtn) addAllBtn.addEventListener('click', () => {
             if (this.currentLevel) this.addAllFromLevel(this.currentLevel);
@@ -189,27 +221,37 @@ class EnglishWordsApp {
         });
     }
 
-    /* ================= NAVIGATION ================= */
+    updateModeButtons() {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        const el = document.querySelector(this.studyMode === 'flashcards' ? '#modeFlashcards' : '#modeQuiz');
+        if (el) el.classList.add('active');
+    }
+    updatePracticeButtons() {
+        document.querySelectorAll('.practice-btn').forEach(b => b.classList.remove('active'));
+        const el = document.querySelector(this.practiceMode === 'scheduled' ? '#practiceScheduled' : '#practiceEndless');
+        if (el) el.classList.add('active');
+    }
+
+    /* ================= НАВИГАЦИЯ ================= */
     switchSection(sectionName) {
-        // nav state
+        // Кнопки
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         const navBtn = document.querySelector(`.nav-item[data-section="${sectionName}"]`);
         if (navBtn) navBtn.classList.add('active');
 
-        // section visibility
+        // Секции
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         const sec = document.getElementById(sectionName);
         if (sec) sec.classList.add('active');
 
         this.currentSection = sectionName;
 
-        // per-section render
         if (sectionName === 'learning') this.renderLearningWords();
         else if (sectionName === 'new-words') this.renderCustomWords();
         else if (sectionName === 'progress') this.renderProgress();
     }
 
-    /* ================= LEVELS ================= */
+    /* ================= УРОВНИ ================= */
     showLevelWords(level) {
         this.currentLevel = level;
         const wordsContainer = document.getElementById('wordsContainer');
@@ -314,7 +356,7 @@ class EnglishWordsApp {
         return [...db, ...customs];
     }
 
-    /* ================= LEARNING LIST ================= */
+    /* ================= ИЗУЧЕНИЕ ================= */
     createLearningWord(word, translation, level) {
         return {
             id: Date.now().toString() + Math.random().toString(36).slice(2),
@@ -416,6 +458,7 @@ class EnglishWordsApp {
     buildPracticeQueue() {
         const now = new Date();
         const active = this.learningWords.filter(w => !w.isLearned);
+
         const due = active.filter(w => new Date(w.repetitionData.nextReview) <= now);
         due.sort((a, b) => {
             if (a.repetitionData.difficulty !== b.repetitionData.difficulty) {
@@ -443,7 +486,18 @@ class EnglishWordsApp {
         else this.showQuiz();
     }
 
-    /* ================= FLASHCARDS ================= */
+    /* ================= КАРТОЧКИ ================= */
+    getPrimaryImageUrl(word) {
+        // Более «щедрый» запрос к Unsplash Source (без ключей)
+        // Пример: https://source.unsplash.com/600x400/?run,english
+        const q = encodeURIComponent(word);
+        return `https://source.unsplash.com/800x600/?${q},english,illustration`;
+    }
+    getFallbackImageUrl(word) {
+        const seed = encodeURIComponent(word || 'word');
+        return `https://picsum.photos/seed/${seed}/800/600`;
+    }
+
     showFlashcard() {
         const learningWordsList = document.getElementById('learningWordsList');
         if (!learningWordsList) return;
@@ -462,7 +516,9 @@ class EnglishWordsApp {
             ? Math.round((currentWord.repetitionData.correctAnswers / currentWord.repetitionData.totalAnswers) * 100)
             : 0;
 
-        const imageUrl = `https://source.unsplash.com/featured/800x600?${encodeURIComponent(currentWord.word)}`;
+        const imageUrl = this.getPrimaryImageUrl(currentWord.word);
+        const fallbackUrl = this.getFallbackImageUrl(currentWord.word);
+
         const progress = this.currentReviewIndex + 1;
         const total = this.currentReviewWords.length;
 
@@ -476,7 +532,8 @@ class EnglishWordsApp {
                 </div>
 
                 <div class="flashcard">
-                    <img src="${imageUrl}" alt="image for ${currentWord.word}" class="flashcard-image" onerror="this.style.display='none'"/>
+                    <img src="${imageUrl}" alt="image for ${currentWord.word}" class="flashcard-image"
+                         onerror="this.onerror=null; this.src='${fallbackUrl}';"/>
                     <div class="flashcard-body">
                         <div class="flashcard-title">${prompt}</div>
                         <div class="flashcard-subtitle">${currentWord.level} • Точность: ${accuracy}%</div>
@@ -522,14 +579,13 @@ class EnglishWordsApp {
             return;
         }
 
-        // Build options. If опций < 2 (например, нет базы), fallback -> flashcards
         const direction = Math.random() < 0.5 ? 'EN_RU' : 'RU_EN';
         const questionText = direction === 'EN_RU' ? currentWord.word : currentWord.translation;
         const correct = direction === 'EN_RU' ? currentWord.translation : currentWord.word;
 
         const options = this.buildQuizOptions(currentWord, direction);
         if (options.length < 2) {
-            // Недостаточно дистракторов -> используем флешкарточку
+            // Недостаточно отвлекающих опций — откатываемся к карточке
             this.showFlashcard();
             return;
         }
@@ -537,6 +593,9 @@ class EnglishWordsApp {
 
         const progress = this.currentReviewIndex + 1;
         const total = this.currentReviewWords.length;
+
+        const imageUrl = this.getPrimaryImageUrl(currentWord.word);
+        const fallbackUrl = this.getFallbackImageUrl(currentWord.word);
 
         learningWordsList.innerHTML = `
             <div class="review-container">
@@ -548,6 +607,8 @@ class EnglishWordsApp {
                 </div>
 
                 <div class="quiz-container">
+                    <img src="${imageUrl}" alt="image for ${currentWord.word}" class="flashcard-image"
+                         onerror="this.onerror=null; this.src='${fallbackUrl}';"/>
                     <div class="quiz-question">${questionText}</div>
                     <div class="quiz-sub">${currentWord.level} • Выберите правильный вариант</div>
                     <div class="quiz-options" id="quizOptions">
@@ -589,7 +650,6 @@ class EnglishWordsApp {
         pick(others);
 
         const options = Array.from(set);
-        // Дополнение, если вдруг опций мало и others есть
         while (options.length < 4 && others.length) {
             const w = others.pop();
             const val = direction === 'EN_RU' ? w.translation : w.word;
@@ -622,13 +682,13 @@ class EnglishWordsApp {
         setTimeout(() => this.handleAnswer(q), 450);
     }
 
-    /* ================= SESSION FLOW ================= */
+    /* ================= ПОТОК СЕССИИ ================= */
     handleAnswer(quality) {
         const currentWord = this.currentReviewWords[this.currentReviewIndex];
         this.updateSpacedRepetition(currentWord, quality);
 
         if (this.practiceMode === 'endless' && quality < 5) {
-            // Reinsertion for in-session spacing
+            // Реинсерты ошибок в сессию
             const offset = quality === 0 ? 3 : 6;
             const insertIndex = Math.min(this.currentReviewWords.length, this.currentReviewIndex + offset);
             this.currentReviewWords.splice(insertIndex, 0, currentWord);
@@ -777,7 +837,7 @@ class EnglishWordsApp {
         }
     }
 
-    /* ================= CUSTOM WORDS ================= */
+    /* ================= ПОЛЬЗОВАТЕЛЬСКИЕ СЛОВА ================= */
     addCustomWord() {
         const wordInput = document.getElementById('newWord');
         const translationInput = document.getElementById('newTranslation');
@@ -869,10 +929,9 @@ class EnglishWordsApp {
         }).join('');
     }
 
-    /* ================= AUDIO ================= */
+    /* ================= АУДИО ================= */
     async playAudio(word, accent = 'uk') {
-        const processedWord = word.toLowerCase().replace(/[^a-z]/g, '');
-        // Optional: visual feedback on buttons that triggered play
+        const processedWord = (word || '').toLowerCase().replace(/[^a-z]/g, '');
         const selectorsafe = this.safe(word);
         const playButtons = document.querySelectorAll(`[onclick*="playAudio('${selectorsafe}')"]`);
         playButtons.forEach(btn => {
@@ -932,13 +991,13 @@ class EnglishWordsApp {
         });
     }
 
-    /* ================= UI & NOTIFY ================= */
+    /* ================= UI & УВЕДОМЛЕНИЯ ================= */
     updateUI() {
-        // Learning count
+        // Счетчик изучаемых слов
         const learningCount = document.getElementById('learningCount');
         if (learningCount) learningCount.textContent = `${this.learningWords.length} слов`;
 
-        // Level counts
+        // Количество слов в карточках уровней
         document.querySelectorAll('.level-card').forEach(card => {
             const level = card.dataset.level;
             const wordCountEl = card.querySelector('.word-count');
@@ -948,7 +1007,6 @@ class EnglishWordsApp {
             if (wordCountEl) wordCountEl.textContent = `${total} слов`;
         });
 
-        // If progress open, re-render
         if (this.currentSection === 'progress') this.renderProgress();
     }
 
@@ -981,7 +1039,7 @@ class EnglishWordsApp {
         return colors[type] || '#3b82f6';
     }
 
-    /* ================= SPACED REPETITION (SM-2-like) ================= */
+    /* ================= SM‑2 ================= */
     updateSpacedRepetition(word, quality) {
         const d = word.repetitionData;
         d.totalAnswers++;
@@ -1034,7 +1092,7 @@ class EnglishWordsApp {
         if (migrated) this.saveData();
     }
 
-    /* ================= PROGRESS ================= */
+    /* ================= ПРОГРЕСС ================= */
     renderProgress() {
         const el = document.getElementById('progressContent');
         if (!el) return;
@@ -1071,7 +1129,7 @@ class EnglishWordsApp {
         `;
     }
 
-    /* ================= HELPERS ================= */
+    /* ================= ХЕЛПЕРЫ ================= */
     shuffle(arr) {
         const a = arr.slice();
         for (let i = a.length - 1; i > 0; i--) {
@@ -1082,16 +1140,7 @@ class EnglishWordsApp {
     }
 }
 
-// Initialize app once DOM is ready
+// Инициализация приложения после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new EnglishWordsApp();
 });
-
-// Optional: small style helper for learned cards (kept)
-const additionalStyles = `
-    .word-card.learned { opacity: 0.7; background: var(--bg-tertiary); }
-    .learned-badge { background: var(--accent-color); color: white; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; margin-top: 0.5rem; display: inline-block; }
-`;
-const styleSheet = document.createElement('style');
-styleSheet.textContent = additionalStyles;
-document.head.appendChild(styleSheet);
