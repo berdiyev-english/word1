@@ -109,7 +109,7 @@ class EnglishWordsApp {
     }
     getDailyProgress() {
         const today = new Date().toDateString();
-        the const todayWords = this.learningWords.filter(w =>
+        const todayWords = this.learningWords.filter(w =>
             w.dateLearned && new Date(w.dateLearned).toDateString() === today
         );
         return todayWords.length;
@@ -117,7 +117,7 @@ class EnglishWordsApp {
 
     /* ================= СОБЫТИЯ ================= */
     setupEventListeners() {
-        // Нижняя навигация: делегирование (надежно)
+        // Нижняя навигация: делегирование (надёжно)
         const bottomNav = document.getElementById('bottomNav');
         if (bottomNav) {
             bottomNav.addEventListener('click', (e) => {
@@ -151,7 +151,7 @@ class EnglishWordsApp {
             if (this.currentLevel) this.removeAllFromLevel(this.currentLevel);
         });
 
-        // КНОПКИ МАССОВЫХ ДЕЙСТВИЙ — делегирование на контейнер (надежнее)
+        // КНОПКИ МАССОВЫХ ДЕЙСТВИЙ — делегирование на контейнер
         const wordsContainer = document.getElementById('wordsContainer');
         if (wordsContainer) {
             wordsContainer.addEventListener('click', (e) => {
@@ -863,7 +863,7 @@ class EnglishWordsApp {
         this.customWords.push(newWord);
         this.saveData();
         this.renderCustomWords();
-        this.updateUI();
+       	this.updateUI();
         this.showNotification('Слово добавлено', 'success');
 
         wordInput.value = '';
