@@ -1147,4 +1147,4 @@ shuffle(arr) {
 }
 }
 
-// Init document.addEventListener('DOMContentLoaded', () => { window.app = new EnglishWordsApp(); });
+Init document.addEventListener('DOMContentLoaded', () => { window.app = new EnglishWordsApp(); });
