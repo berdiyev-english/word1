@@ -1,4 +1,3 @@
-// Oxford 3000 Words Database - Enhanced with real Oxford words
 const oxfordWordsDatabase = {
   "A1": [
     {
