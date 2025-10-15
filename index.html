@@ -1,244 +1,268 @@
-<!DOCTYPE html> <html lang="ru"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>English Words - Изучение английских слов</title> <link rel="stylesheet" href="styles.css"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> </head> <body> <div class="app-container"> <!-- Header --> <header class="app-header"> <div class="header-content"> <h1 class="app-title">English Words</h1> <div class="header-actions"> <button class="theme-toggle" id="themeToggle" data-testid="theme-toggle"> <i class="fas fa-moon"></i> </button> </div> </div> </header>
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- About Section -->
-        <section id="about" class="content-section active">
-            <div class="section-header">
-                <h2>О приложении</h2>
-            </div>
-            <div class="about-content">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3>Изучение по уровням</h3>
-                    <p>Структурированное изучение английских слов от A1 до C2</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-volume-up"></i>
-                    </div>
-                    <h3>Произношение</h3>
-                    <p>Прослушивание правильного произношения слов (британский/американский)</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Отслеживание прогресса</h3>
-                    <p>Прогресс по уровням, изученные слова и текущие занятия</p>
-                </div>
-                
-                <div class="author-info">
-                    <h3>Об авторе методики</h3>
-                    <p>Методика <strong>Абдуррахима Бердиева</strong>.</p>
-                    <a href="https://berdiyev-eng.tilda.ws/" target="_blank" class="author-link">
-                        <i class="fas fa-external-link-alt"></i>
-                        Узнать больше об авторе
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Words by Levels Section -->
-        <section id="levels" class="content-section">
-            <div class="section-header">
-                <h2>Слова по уровням</h2>
-            </div>
-            <div class="levels-grid">
-                <div class="level-card" data-level="A1" data-testid="level-card-A1">
-                    <div class="level-badge beginner">A1</div>
-                    <h3>Beginner</h3>
-                    <p>Базовые слова для начинающих</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-                
-                <div class="level-card" data-level="A2" data-testid="level-card-A2">
-                    <div class="level-badge elementary">A2</div>
-                    <h3>Elementary</h3>
-                    <p>Элементарный уровень</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-                
-                <div class="level-card" data-level="B1" data-testid="level-card-B1">
-                    <div class="level-badge intermediate">B1</div>
-                    <h3>Intermediate</h3>
-                    <p>Средний уровень</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-                
-                <div class="level-card" data-level="B2" data-testid="level-card-B2">
-                    <div class="level-badge upper-intermediate">B2</div>
-                    <h3>Upper-Intermediate</h3>
-                    <p>Выше среднего</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-                
-                <div class="level-card" data-level="C1" data-testid="level-card-C1">
-                    <div class="level-badge advanced">C1</div>
-                    <h3>Advanced</h3>
-                    <p>Продвинутый уровень</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-                
-                <div class="level-card" data-level="C2" data-testid="level-card-C2">
-                    <div class="level-badge proficiency">C2</div>
-                    <h3>Proficiency</h3>
-                    <p>Профессиональный уровень</p>
-                    <div class="level-stats">
-                        <span class="word-count">0 слов</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Words List -->
-            <div id="wordsContainer" class="words-container hidden">
-                <div class="words-header">
-                    <button class="back-btn" id="backToLevels" data-testid="back-to-levels">
-                        <i class="fas fa-arrow-left"></i>
-                        Назад к уровням
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Words - Изучение английских слов</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">English Words</h1>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="themeToggle" data-testid="theme-toggle">
+                        <i class="fas fa-moon"></i>
                     </button>
-                    <h3 id="currentLevelTitle">Слова уровня</h3>
-                    <div class="level-bulk-actions">
-                        <button id="addAllLevelBtn" class="action-btn add-btn" title="Добавить все слова уровня" data-testid="add-all-level-btn">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button id="removeAllLevelBtn" class="action-btn remove-btn" title="Удалить все слова уровня" data-testid="remove-all-level-btn">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- About Section -->
+            <section id="about" class="content-section active">
+                <div class="section-header">
+                    <h2>О приложении</h2>
+                </div>
+                <div class="about-content">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3>Изучение по уровням</h3>
+                        <p>Структурированное изучение английских слов от начального до продвинутого уровня (A1–C2)</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                        <h3>Произношение</h3>
+                        <p>Прослушивание правильного произношения слов (британский и американский акценты)</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Отслеживание прогресса</h3>
+                        <p>Учет изученных слов и прогресс по уровням</p>
+                    </div>
+                    
+                    <div class="author-info">
+                        <h3>Об авторе методики</h3>
+                        <p>Приложение создано на основе методики <strong>Абдуррахима Бердиева</strong>.</p>
+                        <a href="https://berdiyev-eng.tilda.ws/" target="_blank" class="author-link">
+                            <i class="fas fa-external-link-alt"></i>
+                            Узнать больше об авторе
+                        </a>
                     </div>
                 </div>
-                <div id="wordsList" class="words-list">
-                    <!-- Words populated by JavaScript -->
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Learning Words Section -->
-        <section id="learning" class="content-section">
-            <div class="section-header">
-                <h2>Изучаю</h2>
-                <div class="section-stats">
-                    <span id="learningCount">0 слов</span>
+            <!-- Words by Levels Section -->
+            <section id="levels" class="content-section">
+                <div class="section-header">
+                    <h2>Слова по уровням</h2>
                 </div>
-            </div>
+                <div class="levels-grid">
+                    <div class="level-card" data-level="A1" data-testid="level-card-A1">
+                        <div class="level-badge beginner">A1</div>
+                        <h3>Beginner</h3>
+                        <p>Базовые слова для начинающих</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="level-card" data-level="A2" data-testid="level-card-A2">
+                        <div class="level-badge elementary">A2</div>
+                        <h3>Elementary</h3>
+                        <p>Элементарный уровень</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="level-card" data-level="B1" data-testid="level-card-B1">
+                        <div class="level-badge intermediate">B1</div>
+                        <h3>Intermediate</h3>
+                        <p>Средний уровень</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="level-card" data-level="B2" data-testid="level-card-B2">
+                        <div class="level-badge upper-intermediate">B2</div>
+                        <h3>Upper-Intermediate</h3>
+                        <p>Выше среднего</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="level-card" data-level="C1" data-testid="level-card-C1">
+                        <div class="level-badge advanced">C1</div>
+                        <h3>Advanced</h3>
+                        <p>Продвинутый уровень</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                    
+                    <div class="level-card" data-level="C2" data-testid="level-card-C2">
+                        <div class="level-badge proficiency">C2</div>
+                        <h3>Proficiency</h3>
+                        <p>Профессиональный уровень</p>
+                        <div class="level-stats">
+                            <span class="word-count">0 слов</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Words List -->
+                <div id="wordsContainer" class="words-container hidden">
+                    <div class="words-header">
+                        <button class="back-btn" id="backToLevels" data-testid="back-to-levels">
+                            <i class="fas fa-arrow-left"></i>
+                            Назад к уровням
+                        </button>
+                        <h3 id="currentLevelTitle">Слова уровня</h3>
+                        <div class="level-bulk-actions">
+                            <button id="addAllLevelBtn" class="action-btn add-btn" title="Добавить все слова уровня" data-testid="add-all-level-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="removeAllLevelBtn" class="action-btn remove-btn" title="Удалить все слова уровня" data-testid="remove-all-level-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="wordsList" class="words-list">
+                        <!-- Слова наполняются из app.js -->
+                    </div>
+                </div>
+            </section>
 
-            <!-- Toggles -->
-            <div class="toggles-row">
-                <div class="mode-toggle" role="tablist" aria-label="study mode">
-                    <button class="mode-btn active" data-mode="flashcards" id="modeFlashcards" data-testid="mode-flashcards">Флешкарточки</button>
-                    <button class="mode-btn" data-mode="quiz" id="modeQuiz" data-testid="mode-quiz">Quiz</button>
+            <!-- Learning Words Section -->
+            <section id="learning" class="content-section">
+                <div class="section-header">
+                    <h2>Изучаю</h2>
+                    <div class="section-stats">
+                        <span id="learningCount">0 слов</span>
+                    </div>
                 </div>
-                <div class="practice-toggle" role="tablist" aria-label="practice mode">
-                    <button class="practice-btn active" data-practice="scheduled" id="practiceScheduled" data-testid="practice-scheduled">Запланировано</button>
-                    <button class="practice-btn" data-practice="endless" id="practiceEndless" data-testid="practice-endless">Бесконечно</button>
-                </div>
-            </div>
 
-            <div id="learningWordsList" class="words-list">
-                <div class="empty-state">
-                    <i class="fas fa-book-open"></i>
-                    <h3>Пока нет слов для изучения</h3>
-                    <p>Добавьте слова из списка по уровням или создайте новые</p>
+                <!-- Toggles -->
+                <div class="toggles-row">
+                    <div class="mode-toggle" role="tablist" aria-label="study mode">
+                        <button class="mode-btn active" data-mode="flashcards" id="modeFlashcards" data-testid="mode-flashcards">Флешкарточки</button>
+                        <button class="mode-btn" data-mode="quiz" id="modeQuiz" data-testid="mode-quiz">Quiz</button>
+                    </div>
+                    <div class="practice-toggle" role="tablist" aria-label="practice mode">
+                        <button class="practice-btn active" data-practice="scheduled" id="practiceScheduled" data-testid="practice-scheduled">Запланировано</button>
+                        <button class="practice-btn" data-practice="endless" id="practiceEndless" data-testid="practice-endless">Бесконечно</button>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- New Words Section -->
-        <section id="new-words" class="content-section">
-            <div class="section-header">
-                <h2>Новые слова</h2>
-            </div>
-            <div class="add-word-form">
-                <div class="form-group">
-                    <label for="newWord">Английское слово</label>
-                    <input type="text" id="newWord" placeholder="Введите слово на английском" data-testid="new-word-input">
-                </div>
-                <div class="form-group">
-                    <label for="newTranslation">Перевод</label>
-                    <input type="text" id="newTranslation" placeholder="Введите перевод" data-testid="new-translation-input">
-                </div>
-                <div class="form-group">
-                    <label for="newLevel">Уровень</label>
-                    <select id="newLevel" data-testid="new-level-select">
-                        <option value="A1">A1 - Beginner</option>
-                        <option value="A2">A2 - Elementary</option>
-                        <option value="B1">B1 - Intermediate</option>
-                        <option value="B2">B2 - Upper-Intermediate</option>
-                        <option value="C1">C1 - Advanced</option>
-                        <option value="C2">C2 - Proficiency</option>
-                    </select>
-                </div>
-                <button class="add-word-btn" id="addWordBtn" data-testid="add-word-btn">
-                    <i class="fas fa-plus"></i>
-                    Добавить слово
-                </button>
-            </div>
-            
-            <div id="customWordsList" class="words-list">
-                <h3>Добавленные слова</h3>
-                <div id="customWords">
+                <div id="learningWordsList" class="words-list">
                     <div class="empty-state">
-                        <i class="fas fa-plus-circle"></i>
-                        <h3>Нет добавленных слов</h3>
-                        <p>Используйте форму выше для добавления новых слов</p>
+                        <i class="fas fa-book-open"></i>
+                        <h3>Пока нет слов для изучения</h3>
+                        <p>Добавьте слова из списка по уровням или создайте новые</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Progress Section -->
-        <section id="progress" class="content-section">
-            <div class="section-header">
-                <h2>Прогресс</h2>
-            </div>
-            <div id="progressContent" class="progress-content">
-                <!-- Рендерится из JS -->
-            </div>
-        </section>
-    </main>
+            <!-- New Words Section -->
+            <section id="new-words" class="content-section">
+                <div class="section-header">
+                    <h2>Новые слова</h2>
+                </div>
+                <div class="add-word-form">
+                    <div class="form-group">
+                        <label for="newWord">Английское слово</label>
+                        <input type="text" id="newWord" placeholder="Введите слово на английском" data-testid="new-word-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="newTranslation">Перевод</label>
+                        <input type="text" id="newTranslation" placeholder="Введите перевод" data-testid="new-translation-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="newLevel">Уровень</label>
+                        <select id="newLevel" data-testid="new-level-select">
+                            <option value="A1">A1 - Beginner</option>
+                            <option value="A2">A2 - Elementary</option>
+                            <option value="B1">B1 - Intermediate</option>
+                            <option value="B2">B2 - Upper-Intermediate</option>
+                            <option value="C1">C1 - Advanced</option>
+                            <option value="C2">C2 - Proficiency</option>
+                        </select>
+                    </div>
+                    <button class="add-word-btn" id="addWordBtn" data-testid="add-word-btn">
+                        <i class="fas fa-plus"></i>
+                        Добавить слово
+                    </button>
+                </div>
+                
+                <div id="customWordsList" class="words-list">
+                    <h3>Добавленные слова</h3>
+                    <div id="customWords">
+                        <div class="empty-state">
+                            <i class="fas fa-plus-circle"></i>
+                            <h3>Нет добавленных слов</h3>
+                            <p>Используйте форму выше для добавления новых слов</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav" id="bottomNav">
-        <button class="nav-item active" data-section="about" data-testid="nav-about">
-            <i class="fas fa-info-circle"></i>
-            <span>О приложении</span>
-        </button>
-        <button class="nav-item" data-section="levels" data-testid="nav-levels">
-            <i class="fas fa-layer-group"></i>
-            <span>Уровни</span>
-        </button>
-        <button class="nav-item" data-section="learning" data-testid="nav-learning">
-            <i class="fas fa-book-reader"></i>
-            <span>Изучаю</span>
-        </button>
-        <button class="nav-item" data-section="new-words" data-testid="nav-new-words">
-            <i class="fas fa-plus"></i>
-            <span>Новые</span>
-        </button>
-        <button class="nav-item" data-section="progress" data-testid="nav-progress">
-            <i class="fas fa-chart-line"></i>
-            <span>Прогресс</span>
-        </button>
-    </nav>
-</div>
+            <!-- Progress Section -->
+            <section id="progress" class="content-section">
+                <div class="section-header">
+                    <h2>Прогресс</h2>
+                </div>
+                <div id="progressContent" class="progress-content">
+                    <!-- Рендерится из JS -->
+                </div>
+            </section>
+        </main>
 
-<!-- Audio Element -->
-<audio id="audioPlayer" preload="none"></audio>
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav" id="bottomNav">
+            <button class="nav-item active" data-section="about" data-testid="nav-about">
+                <i class="fas fa-info-circle"></i>
+                <span>О приложении</span>
+            </button>
+            <button class="nav-item" data-section="levels" data-testid="nav-levels">
+                <i class="fas fa-layer-group"></i>
+                <span>Уровни</span>
+            </button>
+            <button class="nav-item" data-section="learning" data-testid="nav-learning">
+                <i class="fas fa-book-reader"></i>
+                <span>Изучаю</span>
+            </button>
+            <button class="nav-item" data-section="new-words" data-testid="nav-new-words">
+                <i class="fas fa-plus"></i>
+                <span>Новые</span>
+            </button>
+            <button class="nav-item" data-section="progress" data-testid="nav-progress">
+                <i class="fas fa-chart-line"></i>
+                <span>Прогресс</span>
+            </button>
+        </nav>
+    </div>
 
-<!-- Scripts -->
-<script src="oxford_words_data.js"></script>
-<script src="app.js"></script>
-</body> </html>
+    <!-- Audio Element -->
+    <audio id="audioPlayer" preload="none"></audio>
+
+    <!-- Scripts: ОБЯЗАТЕЛЬНО оставьте оба -->
+    <script src="oxford_words_data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
