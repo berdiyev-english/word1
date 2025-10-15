@@ -1,5 +1,5 @@
 <!DOCTYPE html> <html lang="ru"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>English Words - Изучение английских слов</title> <link rel="stylesheet" href="styles.css"> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> </head> <body> <div class="app-container"> <!-- Header --> <header class="app-header"> <div class="header-content"> <h1 class="app-title">English Words</h1> <div class="header-actions"> <button class="theme-toggle" id="themeToggle" data-testid="theme-toggle"> <i class="fas fa-moon"></i> </button> </div> </div> </header>
-    <!-- Main Content --->
+    <!-- Main Content -->
     <main class="main-content">
         <!-- About Section -->
         <section id="about" class="content-section active">
@@ -12,7 +12,7 @@
                         <i class="fas fa-graduation-cap"></i>
                     </div>
                     <h3>Изучение по уровням</h3>
-                    <p>Структурированное изучение английских слов от начального до продвинутого уровня (A1-C2)</p>
+                    <p>Структурированное изучение английских слов от A1 до C2</p>
                 </div>
                 
                 <div class="feature-card">
@@ -20,7 +20,7 @@
                         <i class="fas fa-volume-up"></i>
                     </div>
                     <h3>Произношение</h3>
-                    <p>Прослушивание правильного произношения слов с британским и американским акцентом</p>
+                    <p>Прослушивание правильного произношения слов (британский/американский)</p>
                 </div>
                 
                 <div class="feature-card">
@@ -28,35 +28,16 @@
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3>Отслеживание прогресса</h3>
-                    <p>Ведите учет изученных слов и отслеживайте свой прогресс в изучении языка</p>
+                    <p>Прогресс по уровням, изученные слова и текущие занятия</p>
                 </div>
                 
                 <div class="author-info">
                     <h3>Об авторе методики</h3>
-                    <p>Приложение создано на основе методики <strong>Абдуррахима Бердиева</strong>.</p>
+                    <p>Методика <strong>Абдуррахима Бердиева</strong>.</p>
                     <a href="https://berdiyev-eng.tilda.ws/" target="_blank" class="author-link">
                         <i class="fas fa-external-link-alt"></i>
                         Узнать больше об авторе
                     </a>
-                </div>
-                
-                <div class="data-management">
-                    <h3>Управление данными</h3>
-                    <div class="data-buttons">
-                        <button class="data-btn export-btn" onclick="app.exportData()" data-testid="export-data-btn">
-                            <i class="fas fa-download"></i>
-                            Экспорт данных
-                        </button>
-                        <label class="data-btn import-btn" data-testid="import-data-btn">
-                            <i class="fas fa-upload"></i>
-                            Импорт данных
-                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="app.importData(event)">
-                        </label>
-                        <button class="data-btn clear-btn" onclick="app.clearAllData()" data-testid="clear-data-btn">
-                            <i class="fas fa-trash"></i>
-                            Очистить данные
-                        </button>
-                    </div>
                 </div>
             </div>
         </section>
@@ -140,7 +121,7 @@
                     </div>
                 </div>
                 <div id="wordsList" class="words-list">
-                    <!-- Words will be populated by JavaScript -->
+                    <!-- Words populated by JavaScript -->
                 </div>
             </div>
         </section>
@@ -230,7 +211,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
+    <nav class="bottom-nav" id="bottomNav">
         <button class="nav-item active" data-section="about" data-testid="nav-about">
             <i class="fas fa-info-circle"></i>
             <span>О приложении</span>
